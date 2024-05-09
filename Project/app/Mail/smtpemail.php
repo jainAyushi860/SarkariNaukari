@@ -56,7 +56,7 @@ class smtpemail extends Mailable
     {
         // dd($this->details);
         return $this->subject('Test Email')
-                    ->view('welcome')
+                     ->view('welcome')
                     ->with($this->mailData);
     }
 }

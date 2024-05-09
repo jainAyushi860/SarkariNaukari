@@ -1,39 +1,18 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\emailController;
+// use App\Http\Controllers\AuthController;
+// use App\Http\Controllers\emailController;
+// use App\Http\Controllers\otpController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SignupController;
+use App\Http\Controllers\AddRoleController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
-
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-//    }); 
-
-
-    // // For Login Data
-    // Route::controller(LoginController::class)->group(function(){
-    // Route::post('/signupData','store')->name('signupData');
-    // Route::get('/loginData','login');
-    // Route::get('/forgotPassword','generateOTP');
-    // Route::get('/verifyOTP','OTPverification');
-    // Route::put('/resetPassword','passwordReset')->name('resetPassword');
-    // Route::delete('/deleteData','deleteRecord');
-    // });
 
 
 
@@ -53,44 +32,22 @@ use App\Http\Controllers\emailController;
     Route::get('/getSubscribe','subscriptionRecord');
     });
 
-
-
-    // Route::group(['middleware'=>'api'],function($routes){
-
-    //     Route::post('/register',[UserController::class,'register']);
-    //     Route::post('/login',[UserController::class,'login']);
-    //     Route::post('/profile',[UserController::class,'profile']);
-    //     Route::post('/logout',[UserController::class,'logout']);
-
-    // });
-
-
       // For Login Data
 
       Route::group(['middleware'=>'api'],function($routes){
-
-        Route::post('/signupData',[LoginController::class,'store']);
+        Route::post('/register',[LoginController::class,'store']); 
         Route::post('/loginData',[LoginController::class,'login']);
         Route::post('/profile',[LoginController::class,'profile']);
         Route::post('/logout',[LoginController::class,'logout']);
+        Route::post('/otpBySms', [LoginController::class,'sendOTP']);
         Route::get('/forgotPassword',[LoginController::class,'generateOTP']);
-        Route::get('/verifyOTP',[LoginController::class,'OTPverification']);
+        Route::get('/verifyOTP',[LoginController::class,'OTPverificationEmail']);
         Route::put('/resetPassword',[LoginController::class,'passwordReset']);
         Route::delete('/deleteData',[LoginController::class,'deleteRecord']);
-
-    //   Route::controller(LoginController::class)->group(function(){
-    //     Route::post('/signupData','store')->name('signupData');
-    //     Route::get('/loginData','login');
-    //     Route::get('/forgotPassword','generateOTP');
-    //     Route::get('/verifyOTP','OTPverification');
-    //     Route::put('/resetPassword','passwordReset')->name('resetPassword');
-    //     Route::delete('/deleteData','deleteRecord');
-    //     });
+        Route::get('/sendemail',[LoginController::class,'generateOTP']);  
     });
 
-    // Route::middleware(['auth:sanctum'])->group(function(){
-    // Route::post('/login', [AuthController::class, 'login'])->name('login');
-    // });
+   
 
 
-    Route::get('/sendemail',[emailController::class,'sendEmail']);
+    

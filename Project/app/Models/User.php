@@ -8,12 +8,14 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 // use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject; //interface
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use  HasFactory, Notifiable;
+    use  HasFactory, Notifiable, HasRoles;
 
-
+    protected array $guard_name = ['api', 'web'];
+    
     public function getjWTIdentifier(){
         return $this->getKey();
     }
@@ -30,7 +32,7 @@ class User extends Authenticatable implements JWTSubject
     protected $fillable = [
         'name',
         'email',
-        'password',
+        'password'
     ];
 
     /**

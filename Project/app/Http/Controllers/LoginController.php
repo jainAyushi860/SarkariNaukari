@@ -5,118 +5,73 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Hash;
 use App\Models\Signup;
 use App\Models\OtpGeneration;
 use Auth;
-use Illuminate\Support\Facades\Hash;
+use Mail;
+use App\Mail\smtpemail;
+use Exception;
+use Twilio\Rest\Client;
+use Anhskohbo\NoCaptcha\Facades\NoCaptcha;
+use Laravel\Socialite\Facades\Socialite;
+
+use Tymon\JWTAuth\Facades\JWTAuth;
+//use App\jobs\CleanupExpiredOtps;
 
 class LoginController extends Controller
 { 
 
-    public function store(Request $request){
-          // Validate the incoming request data
-          $validator = Validator::make($request->all(), [
-            'name' => 'required|regex:/^[a-zA-Z- ]*$/',
+    /// for google captcha
+       public function getuser(){
+        return view('google');
+     }
+     
+
+     // For Registration
+     public function store(Request $request){
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|regex:/^[a-zA-Z- ]*$/', 
             'email' => 'required|email|max:100|unique:signup',
-            'mobile' => 'required|regex:/^[0-9]{10}+$/',
+            'mobile' => 'required|regex:/^\+91\s\d{5}\s\d{5}$/',
             'dob' => 'required|regex:/^(\d{4})-(\d{2})-(\d{2})$/',
             'gender' => 'required|in:Male,Female,Other,male,female,other',
-            'password' => 'required|string|min:6|max:8|confirmed',
-            // 'password' => 'required|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/',
-    //       ],
-    //        [
-    // 'name.required' => 'The name field is required.',
-    // 'name.regex' => 'The name field must contain only letters, hyphens, and spaces.',
-    // 'email.required' => 'The email field is required.',
-    // 'email.email' => 'Please enter a valid email address.',
-    // 'mobile.required' => 'The mobile field is required.',
-    // 'mobile.regex' => 'The mobile field must be exactly 10 digits long and contain only numbers.',
-    // 'dob.required' => 'The date of birth field is required.',
-    // 'dob.regex' => 'The date of birth must be in the format YYYY-MM-DD.',
-    // 'gender.required' => 'The gender field is required.',
-    // 'gender.in' => 'Please select a valid gender.',
-    // 'password.required' => 'The password field is required.',
-    // 'password.regex' => 'The password must contain at least 1 lowercase letter, 1 uppercase letter, 1 digit, 1 special character, and be at least 8 characters long.',
-
-   ]);
+            'password' => 'required|string|min:6|max:8',
+            'g-recaptcha-response' => 'required|captcha',
+        ]);
     
-        // If validation fails, return a JSON response with validation errors
         if ($validator->fails()) {
             return response()->json(['message' => $validator->errors()], 422);
         }
-
-        $user =  Signup::create([
+        
+        // $request->validate([
+        //     'name' => 'required|regex:/^[a-zA-Z- ]*$/',
+        //     'email' => 'required|email|max:100|unique:signup',
+        //     'mobile' => 'required|regex:/^\+91\s\d{5}\s\d{5}$/',
+        //     'dob' => 'required|regex:/^(\d{4})-(\d{2})-(\d{2})$/',
+        //     'gender' => 'required|in:Male,Female,Other,male,female,other',
+        //     'password' => 'required|string|min:6|max:8',
+        //     'g-recaptcha-response' => 'required|captcha',
+        // ]);
+    
+        $user = Signup::create([
             'name'=> $request->name,
             'email'=> $request->email,
-            'mobile' => $request->mobile,
-            'dob' => $request->dob,
-            'gender' => $request->gender,
+            'mobile'=> $request->mobile,
+            'dob'=> $request->dob,
+            'gender'=> $request->gender,
             'password'=> Hash::make($request->password),
-            'status' => 'Active',
-           ]);
-           return response()->json([
-             'status' => 1,
-             'message'=> 'User registered successfully',
-             'user'=> $user
-           ]);
-
-//        // Check if the email already exists
-//         $email = $request->email; 
-//       $emailVerify = Signup::where('email', $email)->exists();
-
-//           if ($emailVerify) {
-//               return response()->json(['message' => 'This email is already being used']);
-//             }
-//           else{
-//          // Insert data into the database
-//       $signupData = new Signup;
-
-//       $signupData->name = $request->name;
-//       $signupData->email = $request->email;
-//       $signupData->mobile = $request->mobile;
-//       $signupData->dob =  $request->dob;
-//       $signupData->gender = $request->gender;
-//       $signupData->password = md5($request->password);
-//       $signupData->status = 'Active';
-//       $signupData->created_at = now();
-//       $signupData->save();
-  
-//   // Return a JSON response indicating success
-//   return response()->json(['message' => 'Data saved successfully'], 200);
-//           }
-    
+            'status'=> 'Active',
+        ]);
+        return response()->json([
+                 'status' => 1,
+                 'message'=> 'User registered successfully',
+                 'user'=> $user   
+        ]);
     }
 
-    // /// For Login
-    // public function login(Request $request) {
 
-    //     $validator = Validator::make($request->all(), [
-    //         'email' => 'required|email',
-    //         'password' => 'required|string',
-    //     ]);
-
-    //     if ($validator->fails()) {
-    //         throw ValidationException::withMessages($validator->errors()->toArray());
-    //     }
-
-    //     // $signup = Signup::getByEmailAndPassword($request->email, $request->password);
-
-    //     $signup = Signup::where('email', $request->email)->where('password', $request->password)->first();
-
-    //     if ($signup) {
-    //         // Login successful
-    //         $expirationTime = now()->addMinutes(1); // Token expires in 1 minute
-    //         $token = $this->generateToken($request->email, $expirationTime);
-    //         return response()->json([
-    //             'message' => 'Login successful',
-    //             'token' => $token
-    //         ]);
-    //     } else {
-    //         return response()->json([
-    //             'message' => 'Invalid credentials'
-    //         ], 401);
-    //     }
-    // } 
 
   //For login
 
@@ -125,18 +80,24 @@ class LoginController extends Controller
             $validator = Validator::make($request->all(), [
                 'email' => 'required|string|email',
                 'password' => 'required|string|min:6|max:8',
-              ]);
+               'g-recaptcha-response' => 'required|captcha',
+            ]);
+
+            // $request->validate([
+            //     'email' => 'required|string|email',
+            //     'password' => 'required|string|min:6|max:8',
+            //     'g-recaptcha-response' => 'required|captcha',
+            //   ]);
                 
                     if ($validator->fails()) {
                         return response()->json(['message' => $validator->errors()], 400);
                     }
                 
-                    if(!$token = auth()->attempt($validator->validated())){
+                    if(!$token =  Auth::attempt($validator->validated())){
                        return response()->json(['error'=>'Token is expired']);
                     }
 
                  // Save the token in the database
-
                      $user = auth()->user();
                      $user->token = $token;
                      $user->save();
@@ -144,12 +105,11 @@ class LoginController extends Controller
                     return $this->token($token);
         }
 
-
         protected function token($token){
             return response()->json([
               'access_token'=> $token,
               'token_type'=> 'bearer',
-              'expires_in' => auth()->factory()->getTTL()*60
+              'expires_in' => auth()->factory()->getTTL()*3600
             ]);
         }
     
@@ -171,7 +131,50 @@ class LoginController extends Controller
             }
         }
 
+/// for google login
 
+    public function googleLogin(){
+        return Socialite::driver('google')->redirect();
+     }
+
+     public function googleHandle(){
+        try{
+      $userlogin = Socialite::driver('google')->user();
+
+      $findUser = Signup::where('email',$userlogin->getEmail())->first();
+
+      if(!$findUser){
+
+    $saveuser = Signup::updateOrCreate([
+        'google_id' => $userlogin->getId(),
+    ],[
+            'name' => $userlogin->getName(),
+            'email' => $userlogin->getEmail(),
+            'password' => Hash::make($userlogin->getName().'@'.$userlogin->getId()),
+            'status' => 'Active',
+            'token'=> $userlogin->token
+    ]);
+
+    Auth::login($saveuser);
+    return redirect('/home');
+  
+      }
+      else{
+
+        $saveuser = Signup::where('email',$userlogin->getEmail())->update([
+            'google_id' => $userlogin->getId(),
+        ]);
+        $saveuser = Signup::where('email',$userlogin->getEmail())->first();  
+      
+       }
+
+      Auth::login($findUser);
+      return redirect('/home');
+
+      } catch(Exception $e){
+            dd($e->getMessage());
+        }
+    }
     // public function generateToken($email, $expiryTime){
     //     // Create the payload including email and expiry time
     //     $payload = [
@@ -226,55 +229,136 @@ class LoginController extends Controller
 
 
     /// For OTP generation and forgot password
-    public function generateOTP(Request $request){
-
+      //otp send by email
+    public function generateOTP(Request $request)
+    {
         $validator = Validator::make($request->all(), [
-              'email' => 'required|email',
-          ]);
-       
-          if ($validator->fails()) {
-              return response()->json(['message' => $validator->errors()], 422);
+            'email' => 'required|email',
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->errors()], 422);
+        }
+    
+        $email = $request->email;
+        $signup = Signup::where('email', $email)->first();
+    
+        if (!$signup) {
+            return response()->json(['message' => 'This email is not registered'], 404);
+        }
+    
+        $clientId = $signup->id;
+    
+        // Generate OTP
+        $otp = rand(1000, 9999);     
+
+        $email = $request->email;
+        $otpData = OtpGeneration::where('email', $email)->first();
+        
+        if ($otpData) {
+            $otpData->email_otp = $otp; // Update the OTP
+            $otpData->created_at = now(); // Update the creation timestamp if needed
+            $otpData->save(); // Save the changes
+        } else{
+ // Save OTP in the database
+
+             $otpData = new OtpGeneration;
+             $otpData->email = $email;
+             $otpData->email_otp = $otp;
+             $otpData->client_id = $clientId;
+             $otpData->created_at = now();
+             $otpData->save();
+        }
+
+        $sender = getenv('MAIL_USERNAME');
+      // Send OTP via email
+        $mailData = [
+            'title' => 'Mail from' . $sender,
+            'body' => 'Your One Time Password Is ' . $otp
+        ];
+    
+        Mail::to($email)->send(new smtpemail($mailData));
+    
+        return response()->json(['message' => 'OTP generated and sent successfully']);
+    }
+
+
+    
+    /// For OTP generation and forgot password
+
+    //otp send by sms 
+    public function sendOTP(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'mobile_number' => 'required|regex:/^\+91\s\d{5}\s\d{5}$/',
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->errors()], 422);
+        }
+    
+        $reciever_phone = $request->mobile_number;
+        $signup = Signup::where('mobile', $reciever_phone)->first();
+    
+        if (!$signup) {
+            return response()->json(['message' => 'This Phone number is not registered'], 404);
+        }
+    
+        $clientId = $signup->id;
+    
+        // Generate OTP
+        $otp = rand(1000, 9999);    
+
+        $reciever_phone = $request->mobile_number;
+        $otpData = OtpGeneration::where('mobile_number', $reciever_phone)->first();
+        
+        if ($otpData) {
+            $otpData->mobile_otp = $otp; // Update the OTP
+            $otpData->created_at = now(); // Update the creation timestamp if needed
+            $otpData->save(); // Save the changes
+        } else{
+ // Save OTP in the database
+
+             $otpData = new OtpGeneration;
+             $otpData->mobile_number = $reciever_phone;
+             $otpData->mobile_otp = $otp;
+             $otpData->client_id = $clientId;
+             $otpData->created_at = now();
+             $otpData->save();
+        }
+
+        
+    
+        // Send OTP via sms
+        $reciever_phone = $request->mobile_number;
+        $body = 'Your One Time Password Is ' . $otp;
+
+
+try{
+        $sid    = getenv("TWILIO_SID");
+        $token  = getenv("TWILIO_AUTH_TOKEN");
+        $sendernumber  = getenv("TWILIO_PHONE_NUMBER");
+
+        $client = new Client($sid, $token);
+        $message = $client->messages->create($reciever_phone,[
+              "from" => $sendernumber,
+              "body" => $body
+            ]);
+
+          dd("message send successfully");
+          return $message->sid;
+        // return response()->json(['message' => 'OTP sent successfully']);
           }
-  
-          $email = $request->email;
-          $signup = Signup::where('email', $email)->first();
-  
-          if (!$signup) {
-              return response()->json([
-                  'message' => 'This email is not registered'
-              ], 404);
+          catch (Exception $e){
+            dd("Error:". $e);
           }
-  
-          $clientId = $signup->id;
-  
-          $otp = rand(100000, 999999); // Generates random OTP
-  
-          $existingOtp = OtpGeneration::where('email', $email)->first();
-  
-          if ($existingOtp) {
-              return response()->json([
-                  'message' => 'An OTP has already been sent to this email'
-              ], 400);
-          }else{
-
-
-            $generateOtp = new OtpGeneration;
-
-            $generateOtp->email = $request->email;
-            $generateOtp->otp = $otp;
-            $generateOtp->client_id  = $clientId;
-            $generateOtp->created_at = now();
-            $generateOtp->save();
- 
-   return response()->json(['message' => 'OTP generated successfully']);
-          }  
-       }
-
+     
+    }
 
 
             /// For Otp Verification
-
-  public function OTPverification(Request $request){
+// by email
+  public function OTPverificationEmail(Request $request){
 
     $validator = Validator::make($request->all(), [
               'email' => 'required|email',
@@ -289,7 +373,7 @@ class LoginController extends Controller
          $otp = $request->otp;
  
          $verification = OtpGeneration::where('email', $email)
-             ->where('otp', $otp)
+             ->where('email_otp', $otp)
              ->where('created_at','>=',"now() - interval 100 minute")
              ->first();
  
@@ -303,6 +387,39 @@ class LoginController extends Controller
              ], 400);
          }
      }
+
+
+     //by mobile number
+  public function OTPverificationSms(Request $request){
+
+    $validator = Validator::make($request->all(), [
+        'mobile_number' => 'required|regex:/^\+91\s\d{5}\s\d{5}$/',
+              'otp' => 'required',
+         ]);
+      
+         if ($validator->fails()) {
+             return response()->json(['message' => $validator->errors()], 422);
+         }
+ 
+         $mobile = $request->mobile_number;
+         $mobileOtp = $request->otp;
+ 
+         $verification = OtpGeneration::where('mobile_number', $mobile)
+             ->where('mobile_otp', $mobileOtp)
+             ->where('created_at','>=',"now() - interval 100 minute")
+             ->first();
+ 
+         if ($verification) {
+             return response()->json([
+                 'message' => 'Verified OTP'
+             ]);
+         } else {
+             return response()->json([
+                 'message' => 'Please enter a valid OTP'
+             ], 400);
+         }
+     }
+  
   
        ///For Reset Password
     public function passwordReset(Request $request)
@@ -387,4 +504,7 @@ class LoginController extends Controller
             ], 404);
         }
     }
+
+
+    
 }

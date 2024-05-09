@@ -8,6 +8,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
 use Tymon\JWTAuth\Contracts\JWTSubject; //interface
 
+
 class Signup extends Authenticatable implements JWTSubject
 {
     use  HasFactory, Notifiable;
@@ -34,7 +35,9 @@ class Signup extends Authenticatable implements JWTSubject
         'dob',
         'gender',
         'password',
-        'status'
+        'status',
+        'token',
+        'google_id'
     ];
 
     /**

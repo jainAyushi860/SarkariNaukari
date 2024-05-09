@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 12, 2024 at 02:43 PM
+-- Generation Time: May 01, 2024 at 03:23 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,6 +20,32 @@ SET time_zone = "+00:00";
 --
 -- Database: `indiasarkarinaukari`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `addrole`
+--
+
+CREATE TABLE `addrole` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `permissions` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `addrole`
+--
+
+INSERT INTO `addrole` (`id`, `name`, `created_at`, `updated_at`, `permissions`) VALUES
+(14, 'Owner', '2024-04-26 03:52:41', '2024-04-26 03:52:41', '[\"Add\",\"Edit\",\"View\",\"Delete\"]'),
+(16, 'Viewer', '2024-04-26 03:56:14', '2024-04-26 03:56:14', '[\"View\"]'),
+(17, 'Editor', '2024-04-26 03:58:23', '2024-04-26 03:58:23', '[\"Edit\"]'),
+(18, 'Developer', '2024-04-26 03:59:17', '2024-04-26 03:59:17', '[\"Add\",\"Edit\",\"View\",\"Delete\"]'),
+(19, 'Administrator', '2024-04-26 03:59:52', '2024-04-26 03:59:52', '[\"Add\",\"Edit\",\"View\",\"Delete\"]'),
+(20, 'Subscriber', '2024-04-26 04:00:24', '2024-04-26 04:00:24', '[\"View\"]');
 
 -- --------------------------------------------------------
 
@@ -91,7 +117,50 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (8, '2024_04_12_094008_create_otp_table', 4),
 (9, '2024_04_12_103808_create_media_table', 5),
 (10, '2024_04_12_113416_create_notificationdetail_table', 6),
-(11, '2024_04_12_120334_create_notificationsubscribe_table', 7);
+(11, '2024_04_12_120334_create_notificationsubscribe_table', 7),
+(12, '2024_04_15_115342_add_token_field_to_signup', 8),
+(13, '2024_04_18_065159_mobile_number_to_otp', 9),
+(14, '2024_04_18_083845_change_mobile_number_in_otp', 10),
+(15, '2024_04_18_121229_add_google_id_after_status_to_signup', 11),
+(20, '2024_04_23_073643_create_addrole_table', 16),
+(25, '2024_04_24_050421_create_userrole_table', 17),
+(27, '2024_04_24_053916_add_google_id_to_userrole', 19),
+(29, '2024_04_24_121539_create_permission_tables', 20),
+(30, '2024_04_25_062756_add_foreign_key_to_userrole', 21),
+(31, '2024_04_25_124815_create_userrights', 22),
+(32, '2024_04_26_085623_add_permissions_to_addrole', 23),
+(33, '2024_05_01_042348_create_permission_tables', 24);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `model_has_permissions`
+--
+
+CREATE TABLE `model_has_permissions` (
+  `permission_id` bigint(20) UNSIGNED NOT NULL,
+  `model_type` varchar(255) NOT NULL,
+  `model_id` bigint(20) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `model_has_roles`
+--
+
+CREATE TABLE `model_has_roles` (
+  `role_id` bigint(20) UNSIGNED NOT NULL,
+  `model_type` varchar(255) NOT NULL,
+  `model_id` bigint(20) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `model_has_roles`
+--
+
+INSERT INTO `model_has_roles` (`role_id`, `model_type`, `model_id`) VALUES
+(3, 'App\\Models\\User', 8);
 
 -- --------------------------------------------------------
 
@@ -152,7 +221,9 @@ INSERT INTO `notificationsubscribe` (`id`, `status`, `created_at`, `updated_at`,
 CREATE TABLE `otp` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `email` varchar(100) DEFAULT NULL,
-  `otp` varchar(10) DEFAULT NULL,
+  `email_otp` varchar(100) DEFAULT NULL,
+  `mobile_number` varchar(100) DEFAULT NULL,
+  `mobile_otp` varchar(10) DEFAULT NULL,
   `client_id` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -162,8 +233,9 @@ CREATE TABLE `otp` (
 -- Dumping data for table `otp`
 --
 
-INSERT INTO `otp` (`id`, `email`, `otp`, `client_id`, `created_at`, `updated_at`) VALUES
-(3, 'myadmin@gmail.com', '675310', '4', '2024-04-12 04:58:15', '2024-04-12 04:58:15');
+INSERT INTO `otp` (`id`, `email`, `email_otp`, `mobile_number`, `mobile_otp`, `client_id`, `created_at`, `updated_at`) VALUES
+(43, NULL, NULL, '+91 99296 55475', '6286', '9', '2024-04-19 03:58:44', '2024-04-19 03:58:44'),
+(44, NULL, NULL, '+91 86021 62909', '9972', '27', '2024-04-26 23:11:33', '2024-04-26 23:11:33');
 
 -- --------------------------------------------------------
 
@@ -176,6 +248,34 @@ CREATE TABLE `password_reset_tokens` (
   `token` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `permissions`
+--
+
+CREATE TABLE `permissions` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `guard_name` varchar(255) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `permissions`
+--
+
+INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES
+(2, 'create role', 'web', '2024-05-01 01:27:27', '2024-05-01 01:27:27'),
+(3, 'view role', 'web', '2024-05-01 01:28:30', '2024-05-01 01:28:30'),
+(4, 'update role', 'web', '2024-05-01 01:29:01', '2024-05-01 02:19:28'),
+(5, 'delete role', 'web', '2024-05-01 01:29:32', '2024-05-01 01:29:32'),
+(7, 'create-permission', 'web', '2024-05-01 05:24:56', '2024-05-01 05:24:56'),
+(8, 'view-permission', 'web', '2024-05-01 05:25:18', '2024-05-01 05:25:18'),
+(9, 'update-permission', 'web', '2024-05-01 05:25:39', '2024-05-01 05:25:39'),
+(10, 'delete-permission', 'web', '2024-05-01 05:25:54', '2024-05-01 05:25:54');
 
 -- --------------------------------------------------------
 
@@ -199,6 +299,51 @@ CREATE TABLE `personal_access_tokens` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `roles`
+--
+
+CREATE TABLE `roles` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `guard_name` varchar(255) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `roles`
+--
+
+INSERT INTO `roles` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES
+(2, 'Super-admin', 'web', '2024-05-01 03:41:27', '2024-05-01 03:41:27'),
+(3, 'Admin', 'web', '2024-05-01 03:41:39', '2024-05-01 03:41:39'),
+(4, 'User', 'web', '2024-05-01 03:43:21', '2024-05-01 03:44:40');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `role_has_permissions`
+--
+
+CREATE TABLE `role_has_permissions` (
+  `permission_id` bigint(20) UNSIGNED NOT NULL,
+  `role_id` bigint(20) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `role_has_permissions`
+--
+
+INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
+(2, 2),
+(3, 2),
+(3, 4),
+(4, 2),
+(5, 2);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `signup`
 --
 
@@ -211,17 +356,68 @@ CREATE TABLE `signup` (
   `gender` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   `status` varchar(255) DEFAULT NULL,
+  `token` longtext DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `google_id` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `signup`
 --
 
-INSERT INTO `signup` (`id`, `name`, `email`, `mobile`, `dob`, `gender`, `password`, `status`, `created_at`, `updated_at`) VALUES
-(2, 'admin', 'admin@gmail.com', '8908987776', '2020-02-10', 'Male', '14b7d5d35459b199da100a9540e2c7fd', 'Active', '2024-04-12 02:09:05', '2024-04-12 02:09:05'),
-(4, 'admin', 'myadmin@gmail.com', '8908987776', '2020-02-10', 'Male', 'yT@143rT', 'Active', '2024-04-12 04:54:23', '2024-04-12 04:54:23');
+INSERT INTO `signup` (`id`, `name`, `email`, `mobile`, `dob`, `gender`, `password`, `status`, `token`, `created_at`, `updated_at`, `google_id`) VALUES
+(2, 'admin', 'admin@gmail.com', '8908987776', '2020-02-10', 'Male', '14b7d5d35459b199da100a9540e2c7fd', 'Active', NULL, '2024-04-12 02:09:05', '2024-04-12 02:09:05', NULL),
+(4, 'admin', 'myadmin@gmail.com', '8908987776', '2020-02-10', 'Male', 'yT@143rT', 'Active', NULL, '2024-04-12 04:54:23', '2024-04-12 04:54:23', NULL),
+(6, 'sohil', 'sohil@gmail.com', '7890987678', '2024-03-20', 'male', '$2y$10$sxKsKNRysR/oenfnRSb8ru.HIE2sxumPWUK.fPbT4wr6jbrQFDd9O', 'Active', NULL, '2024-04-15 03:38:31', '2024-04-15 23:29:02', NULL),
+(7, 'sohil', 'sohil12@gmail.com', '7890987678', '2024-03-20', 'male', '$2y$10$mW4RlbdkdUAS6tRd4avhs.KCwk.knPKjk8N566rz3njF7nd.ig.K.', 'Active', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xvZ2luRGF0YSIsImlhdCI6MTcxMzE4NTQzNCwiZXhwIjoxNzEzMTg1NDk0LCJuYmYiOjE3MTMxODU0MzQsImp0aSI6IjBrT1M1OFA1Z3E1SlJHa20iLCJzdWIiOiI3IiwicHJ2IjoiNWM1YjJhZmU2MDI2MmU1M2I1OGE1YTFmMGY5NzIyZjdlNjc3ZjRiYyJ9.zLZ8pqC12HtWKqm_As029Dl4R6NoD7pXqd_QPEG3QXg', '2024-04-15 04:35:23', '2024-04-15 22:57:51', NULL),
+(21, 'ayushi', 'ayushi@gmail.com', '8790978908', '2024-04-02', 'Female', '$2y$10$gHOlG.YytAU9UbZ8eU7FNOWnZI2nxJ3vxTApk1IsY4L2m.Bk0Prlu', 'Active', NULL, '2024-04-22 03:37:16', '2024-04-22 03:37:16', NULL),
+(28, 'Ayushi Jain', 'jayushi073@gmail.com', NULL, NULL, NULL, '$2y$10$TLa9XaFlIY1kkzS9ONR/1excNqpsRiSfUc9COagO4wZTZvVvJulP.', 'Active', 'ya29.a0Ad52N39G6j_KnA8Ckhi8FfQm3xGa74Cp9JXqfXomni-9sgfWUQUcdakqPmGWK8j0VYznQjPiAFUZfMZef8YawUS-tV9tezmfQQfJirlssLyxO3HwQRzS9w1148sBzvEkSPih3pnE02ilHeA3vsrkCLHuAfpBjqgoowaCgYKAVgSARMSFQHGX2MiNs-T-MEarLuERbEYH6hhWw0169', '2024-04-27 03:32:36', '2024-04-27 03:32:36', '103917913326563265305');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `userrights`
+--
+
+CREATE TABLE `userrights` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `rights` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `userrole`
+--
+
+CREATE TABLE `userrole` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `password` varchar(100) DEFAULT NULL,
+  `token` longtext DEFAULT NULL,
+  `status` varchar(20) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `google_id` varchar(255) DEFAULT NULL,
+  `roles` bigint(20) UNSIGNED DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `userrole`
+--
+
+INSERT INTO `userrole` (`id`, `name`, `email`, `password`, `token`, `status`, `created_at`, `updated_at`, `google_id`, `roles`) VALUES
+(1, 'ayushi', 'ayushi@gmail.com', '$2y$10$Kgd6ElgIMJEbTjVEfi5ZVuasuuzntVP6v4Nc93pRgInPmEIlbfUpi', NULL, 'Active', '2024-04-24 01:49:03', '2024-04-24 01:49:03', NULL, NULL),
+(2, 'aayushi', 'aayushi@gmail.com', '$2y$10$oAa7XNheJvn22DtAbMssLOddWHYQLUR5.G/uv3VnTEIP89Z8YxxlK', NULL, 'Active', '2024-04-24 01:51:31', '2024-04-24 01:51:31', NULL, NULL),
+(3, 'nishi', 'nishi@gmail.com', '$2y$10$ZEFm2GNPGXR8DUm5NBrYzeTM1YbM9u6/vEjdIaQzTfzgh5gS7wP3u', NULL, 'Active', '2024-04-24 01:57:42', '2024-04-24 01:57:42', NULL, NULL),
+(4, 'sdssds', 'sssd@gmail.com', '$2y$10$aWREF4BsHokfe4ggL4oAUujXljjI/R2ONY1J/rxMrD7gx6di.2Qhi', NULL, 'Active', '2024-04-24 02:03:26', '2024-04-24 02:03:26', NULL, NULL),
+(5, 'ahsshdw', 'nsssnsn@gmailcom', '$2y$10$PnduVt2EBhchNOPneCLAY.5w2S02wjuqrsJg7qNbqqYT.TeYEETGS', NULL, 'Active', '2024-04-24 02:05:33', '2024-04-24 02:05:33', NULL, NULL),
+(6, 'aaayushi', 'aaayushi12@gmail.com', '$2y$10$EIlHUoD7srn9TPT4zgJ3rOqyaR5IQRIRc.na9tY1f1V2610I93BGO', NULL, 'Active', '2024-04-24 03:28:33', '2024-04-24 03:28:33', NULL, NULL),
+(21, 'Arya', 'arya12@gmail.com', '$2y$10$ybzFeShwgYLfjq9GcumQcO4tovu2lhTT/9tgtT/yXC0cL06W1vEra', NULL, 'Active', '2024-04-26 04:05:20', '2024-04-26 04:05:20', NULL, 14);
 
 -- --------------------------------------------------------
 
@@ -241,8 +437,24 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
+(1, 'Arpita', 'arpita@gmail.com', NULL, '$2y$10$Vp..FEPnWQZWpuoGl43g/uHbEilF31TghmOYyhXgY8f0a9rHVnACK', NULL, '2024-04-15 01:10:08', '2024-04-15 01:10:08'),
+(2, 'Nikita', 'nikita@gmail.com', NULL, '$2y$10$ksbO1Z9pZYlWH5NPvmkYT.xM0X04ESrRqtOpUkIKRPTxQ3mYpMnai', NULL, '2024-04-15 01:11:35', '2024-04-15 01:11:35'),
+(7, 'super admin', 'superadmin@gmail.com', NULL, '$2y$10$4/bTSjST2dYU5bmloMACle8bfZtBYYoqnvCvX05ys9LizAfFsswz6', NULL, '2024-05-01 07:14:38', '2024-05-01 07:14:38'),
+(8, 'dddsd', 'ff@gmail.com', NULL, '$2y$10$WggBo2LLv.QoEf/G/xfIdOHaID7uAEVHhKaMy/WJE8qODyRZqU946', NULL, '2024-05-01 07:20:21', '2024-05-01 07:20:21');
+
+--
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `addrole`
+--
+ALTER TABLE `addrole`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `failed_jobs`
@@ -262,6 +474,20 @@ ALTER TABLE `media`
 --
 ALTER TABLE `migrations`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `model_has_permissions`
+--
+ALTER TABLE `model_has_permissions`
+  ADD PRIMARY KEY (`permission_id`,`model_id`,`model_type`),
+  ADD KEY `model_has_permissions_model_id_model_type_index` (`model_id`,`model_type`);
+
+--
+-- Indexes for table `model_has_roles`
+--
+ALTER TABLE `model_has_roles`
+  ADD PRIMARY KEY (`role_id`,`model_id`,`model_type`),
+  ADD KEY `model_has_roles_model_id_model_type_index` (`model_id`,`model_type`);
 
 --
 -- Indexes for table `notificationdetail`
@@ -289,6 +515,13 @@ ALTER TABLE `password_reset_tokens`
   ADD PRIMARY KEY (`email`);
 
 --
+-- Indexes for table `permissions`
+--
+ALTER TABLE `permissions`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `permissions_name_guard_name_unique` (`name`,`guard_name`);
+
+--
 -- Indexes for table `personal_access_tokens`
 --
 ALTER TABLE `personal_access_tokens`
@@ -297,10 +530,37 @@ ALTER TABLE `personal_access_tokens`
   ADD KEY `personal_access_tokens_tokenable_type_tokenable_id_index` (`tokenable_type`,`tokenable_id`);
 
 --
+-- Indexes for table `roles`
+--
+ALTER TABLE `roles`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `roles_name_guard_name_unique` (`name`,`guard_name`);
+
+--
+-- Indexes for table `role_has_permissions`
+--
+ALTER TABLE `role_has_permissions`
+  ADD PRIMARY KEY (`permission_id`,`role_id`),
+  ADD KEY `role_has_permissions_role_id_foreign` (`role_id`);
+
+--
 -- Indexes for table `signup`
 --
 ALTER TABLE `signup`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `userrights`
+--
+ALTER TABLE `userrights`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `userrole`
+--
+ALTER TABLE `userrole`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `userrole_roles_foreign` (`roles`);
 
 --
 -- Indexes for table `users`
@@ -312,6 +572,12 @@ ALTER TABLE `users`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `addrole`
+--
+ALTER TABLE `addrole`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`
@@ -329,7 +595,7 @@ ALTER TABLE `media`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `notificationdetail`
@@ -347,7 +613,13 @@ ALTER TABLE `notificationsubscribe`
 -- AUTO_INCREMENT for table `otp`
 --
 ALTER TABLE `otp`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+
+--
+-- AUTO_INCREMENT for table `permissions`
+--
+ALTER TABLE `permissions`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `personal_access_tokens`
@@ -356,16 +628,63 @@ ALTER TABLE `personal_access_tokens`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `roles`
+--
+ALTER TABLE `roles`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
 -- AUTO_INCREMENT for table `signup`
 --
 ALTER TABLE `signup`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+
+--
+-- AUTO_INCREMENT for table `userrights`
+--
+ALTER TABLE `userrights`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `userrole`
+--
+ALTER TABLE `userrole`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `model_has_permissions`
+--
+ALTER TABLE `model_has_permissions`
+  ADD CONSTRAINT `model_has_permissions_permission_id_foreign` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `model_has_roles`
+--
+ALTER TABLE `model_has_roles`
+  ADD CONSTRAINT `model_has_roles_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `role_has_permissions`
+--
+ALTER TABLE `role_has_permissions`
+  ADD CONSTRAINT `role_has_permissions_permission_id_foreign` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `role_has_permissions_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `userrole`
+--
+ALTER TABLE `userrole`
+  ADD CONSTRAINT `userrole_roles_foreign` FOREIGN KEY (`roles`) REFERENCES `addrole` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
