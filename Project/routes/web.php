@@ -85,7 +85,7 @@ Route::post('captcha',[LoginController::class,'store'])->name('captcha.store');
 
 ////////////////////////////////////////////////
 
-//Route::group(['middleware' => ['role:super-admin|admin']], function() {
+
 Route::group(['middleware' => ['isAdmin']], function() {
 // for permissions
 Route::resource('permissions',App\Http\Controllers\PermissionController::class);

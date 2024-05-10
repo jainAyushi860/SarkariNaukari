@@ -71,8 +71,6 @@ class LoginController extends Controller
         ]);
     }
 
-
-
   //For login
 
         public function login(Request $request){
@@ -82,12 +80,6 @@ class LoginController extends Controller
                 'password' => 'required|string|min:6|max:8',
                'g-recaptcha-response' => 'required|captcha',
             ]);
-
-            // $request->validate([
-            //     'email' => 'required|string|email',
-            //     'password' => 'required|string|min:6|max:8',
-            //     'g-recaptcha-response' => 'required|captcha',
-            //   ]);
                 
                     if ($validator->fails()) {
                         return response()->json(['message' => $validator->errors()], 400);

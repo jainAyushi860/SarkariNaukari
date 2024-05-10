@@ -12,9 +12,12 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SignupController;
 use App\Http\Controllers\AddRoleController;
+use App\Http\Controllers\MockTestController;
 
 
 
+
+Route::post('/mocktest',[MockTestController::class,'addquestion']);
 
     // For Media Data
     Route::controller(MediaController::class)->group(function(){
@@ -47,7 +50,7 @@ use App\Http\Controllers\AddRoleController;
         Route::get('/sendemail',[LoginController::class,'generateOTP']);  
     });
 
-   
+
 
 
     
