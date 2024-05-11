@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 use App\Models\Exam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Auth;
 
 class ExamController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+
     public function index()
     {
         $exam = Exam::all();
@@ -30,6 +32,7 @@ class ExamController extends Controller
      */
     public function store(Request $request)
     {
+        if (auth()->check()) {
         $validator = validator::make($request ->all(),[
             'exam_name' => 'required|regex:/^[a-zA-Z- ]*$/',
             'exam_year' => 'required|regex:/^[0-9]*$/',
@@ -50,6 +53,9 @@ class ExamController extends Controller
           $examData->save();    
 
         return response()->json(['message' => 'Exam Information Added Successfully']);
+    } else {
+        return response()->json(['message' => 'Not Authorized'], 401);
+    }
     }
 
     /**
@@ -85,6 +91,7 @@ class ExamController extends Controller
      */
     public function update(Request $request)
     {
+        if (auth()->check()) {
         $validator = validator::make($request ->all(),[
             'exam_name' => 'required|regex:/^[a-zA-Z- ]*$/',
             'year' => 'required|regex:/^[0-9]*$/',
@@ -114,6 +121,9 @@ class ExamController extends Controller
  
      // Return a JSON response indicating success
      return response()->json(['message' => 'Data updated successfully'], 200); 
+    } else {
+        return response()->json(['message' => 'Not Authorized'], 401);
+    }
     }
 
     /**
@@ -121,6 +131,7 @@ class ExamController extends Controller
      */
     public function destroy(Request $request)
     {
+        if (auth()->check()) {
         $id = $request->input('id');
 
         if (!$id) {
@@ -134,5 +145,9 @@ class ExamController extends Controller
         } else {
             return response()->json(['status' => 0, 'message' => 'There is an error to deleting the data.'], 500);
         }
+    } else {
+        return response()->json(['message' => 'Not Authorized'], 401);
     }
+ }
+
 }

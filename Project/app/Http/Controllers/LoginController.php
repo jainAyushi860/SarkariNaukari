@@ -78,7 +78,7 @@ class LoginController extends Controller
             $validator = Validator::make($request->all(), [
                 'email' => 'required|string|email',
                 'password' => 'required|string|min:6|max:8',
-               'g-recaptcha-response' => 'required|captcha',
+            //    'g-recaptcha-response' => 'required|captcha',
             ]);
                 
                     if ($validator->fails()) {
@@ -101,7 +101,7 @@ class LoginController extends Controller
             return response()->json([
               'access_token'=> $token,
               'token_type'=> 'bearer',
-              'expires_in' => auth()->factory()->getTTL()*3600
+              'expires_in' => auth()->factory()->getTTL()*3660
             ]);
         }
     

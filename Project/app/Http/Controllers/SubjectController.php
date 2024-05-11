@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Subject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Auth;
 
 class SubjectController extends Controller
 {
@@ -22,6 +23,7 @@ class SubjectController extends Controller
      */
     public function store(Request $request)
     {
+        if (auth()->check()) {
         $validator = validator::make($request ->all(),[
             'subject' => 'required|regex:/^[a-zA-Z- ]*$/',
          ]);
@@ -38,6 +40,9 @@ class SubjectController extends Controller
           $subjectData->save();    
 
         return response()->json(['message' => 'Subject Added Successfully']);
+    } else {
+        return response()->json(['message' => 'Not Authorized'], 401);
+    }
     }
 
     /**
@@ -75,6 +80,7 @@ class SubjectController extends Controller
      */
     public function update(Request $request)
     {
+        if (auth()->check()) {
         $validator = validator::make($request ->all(),[
             'subject_name' => 'required|regex:/^[a-zA-Z- ]*$/',
             'id' => 'regex:/^[0-9]*$/',
@@ -96,11 +102,14 @@ class SubjectController extends Controller
      // Update data from the database 
  
      $updateData = Subject::where('id', $id)->update([
-         'subject_name' => $subjectname,
+         'subject_name' => $subjectName,
      ]);
  
      // Return a JSON response indicating success
      return response()->json(['message' => 'Subject updated successfully'], 200); 
+    } else {
+        return response()->json(['message' => 'Not Authorized'], 401);
+    }
     }
 
     /**
@@ -108,6 +117,7 @@ class SubjectController extends Controller
      */
     public function destroy(Request $request)
     {
+        if (auth()->check()) {
         $id = $request->input('id');
 
         if (!$id) {
@@ -121,5 +131,8 @@ class SubjectController extends Controller
         } else {
             return response()->json(['status' => 0, 'message' => 'There is an error to deleting the subject.'], 500);
         }
+   } else {
+        return response()->json(['message' => 'Not Authorized'], 401);
     }
 }
+ } 

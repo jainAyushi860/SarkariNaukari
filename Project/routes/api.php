@@ -18,26 +18,29 @@ use App\Http\Controllers\ExamController;
 
 
 // For Questions
+Route::group(['middleware'=>'api'],function($routes){
 Route::post('/addquestion',[MockTestController::class,'addquestion']);
+});
+
 Route::get('/viewmocktest/{id}',[MockTestController::class,'viewquestion']);
 
 
   //For Subject
-    Route::controller(SubjectController::class)->group(function(){
-    Route::get('/viewsubject','index');
-    Route::post('/addsubject','store');
-    Route::get('/getsubject','show');
-    Route::put('/updateSubject','update')->name('updateSubject');
-    Route::delete('/deleteSubject','destroy');
-   });
+      Route::group(['middleware'=>'api'],function($routes){
+      Route::get('/viewsubject',[SubjectController::class,'index']);
+      Route::post('/addsubject',[SubjectController::class,'store']);
+      Route::get('/getsubject',[SubjectController::class,'show']);
+      Route::put('/updateSubject',[SubjectController::class,'update'])->name('updateSubject');
+      Route::delete('/deleteSubject',[SubjectController::class,'destroy']);
+      });
 
      //For Exam 
-      Route::controller(ExamController::class)->group(function(){
-      Route::get('/viewexam','index');
-      Route::post('/addexam','store');
-      Route::get('/getexam','show');
-      Route::put('/updateExam','update')->name('updateExam');
-      Route::delete('/deleteExam','destroy');
+      Route::group(['middleware'=>'api'],function($routes){
+      Route::get('/viewexam',[ExamController::class,'index']);
+      Route::post('/addexam',[ExamController::class,'store']);
+      Route::get('/getexam',[ExamController::class,'show']);
+      Route::put('/updateExam',[ExamController::class,'update'])->name('updateExam');
+      Route::delete('/deleteExam',[ExamController::class,'destroy']);
     });
 
     // For Media Data
