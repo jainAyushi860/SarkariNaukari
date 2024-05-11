@@ -13,11 +13,23 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SignupController;
 use App\Http\Controllers\AddRoleController;
 use App\Http\Controllers\MockTestController;
+use App\Http\Controllers\SubjectController;
 
 
+// For Questions
+Route::post('/addquestion',[MockTestController::class,'addquestion']);
+Route::get('/viewmocktest/{id}',[MockTestController::class,'viewquestion']);
 
 
-Route::post('/mocktest',[MockTestController::class,'addquestion']);
+    //For Subject
+   Route::controller(SubjectController::class)->group(function(){
+   Route::get('/viewsubject','index');
+   Route::post('/addsubject','store');
+   Route::get('/get','show');
+   Route::put('/updateSubject','update')->name('updateSubject');
+   Route::delete('/delete','destroy');
+   });
+
 
     // For Media Data
     Route::controller(MediaController::class)->group(function(){

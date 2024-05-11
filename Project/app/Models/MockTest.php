@@ -10,6 +10,7 @@ class MockTest extends Model
     use HasFactory;
     protected $table ='add_mock_test';
     protected $fillable = [
+        'id',
         'question',
         'option1',
         'option2',
