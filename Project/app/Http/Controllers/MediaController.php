@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Media;
+use Auth;
 
 class MediaController extends Controller
 {
     // For Fetching
  public function fetchRecord(Request $request){
-
+    if (auth()->check()) {
      $fromDate = $request->input('fromDate');
      $toDate = $request->input('toDate');
 
@@ -32,11 +33,15 @@ class MediaController extends Controller
      } else {
          return response()->json(['status' => 0, 'message' => 'No Record Found']);
      }
+    } else {
+        return response()->json(['message' => 'Not Authorized'], 401);
+    }
  }
 
  // For insertion
  public function store(Request $request) {
  
+    if (auth()->check()) {
     // Validate the incoming request data
  $validator = Validator::make($request->all(), [
     'title' => 'required|regex:/^[a-zA-Z- ]*$/',
@@ -71,11 +76,15 @@ $path = $file->store('mediadocument', 'public');
 
 // Return a JSON response indicating success
 return response()->json(['message' => 'Data saved successfully'], 200);
+} else {
+    return response()->json(['message' => 'Not Authorized'], 401);
+}
   }
 
      // For Updation
      public function update(Request $request)
      {
+        if (auth()->check()) {
              // Validate the incoming request data
       $validator = Validator::make($request->all(), [
          'title' => 'required|regex:/^[a-zA-Z- ]*$/',
@@ -121,13 +130,17 @@ return response()->json(['message' => 'Data saved successfully'], 200);
      ]);
  
      // Return a JSON response indicating success
-     return response()->json(['message' => 'Data updated successfully'], 200); 
+     return response()->json(['message' => 'Data updated successfully'], 200);
+    } else {
+        return response()->json(['message' => 'Not Authorized'], 401);
+    } 
      }
 
 
  // For Deletion
 public function destroy(Request $request)
 {
+    if (auth()->check()) {
     $id = $request->input('id');
 
     if (!$id) {
@@ -141,5 +154,9 @@ public function destroy(Request $request)
     } else {
         return response()->json(['status' => 0, 'message' => 'There is an error deleting the record.'], 500);
     }
+} else {
+    return response()->json(['message' => 'Not Authorized'], 401);
 }
+  }
+
 }

@@ -44,20 +44,33 @@ Route::get('/viewmocktest/{id}',[MockTestController::class,'viewquestion']);
     });
 
     // For Media Data
-     Route::controller(MediaController::class)->group(function(){
-     Route::get('/getList', 'fetchRecord');
-     Route::post('/insertList', 'store')->name('insertList');
-     Route::put('/updateList', 'update')->name('updateList');
-     Route::delete('/deleteList', 'destroy');
-     });
+
+    Route::group(['middleware'=>'api'],function($routes){
+      Route::get('/getList',[MediaController::class,'fetchRecord']);
+      Route::post('/insertList',[MediaController::class,'store'])->name('insertList');
+      Route::put('/updateList',[MediaController::class,'update'])->name('updateList');
+      Route::delete('/deleteList',[MediaController::class,'destroy']);
+    });
+    //  Route::controller(MediaController::class)->group(function(){
+    //  Route::get('/getList', 'fetchRecord');
+    //  Route::post('/insertList', 'store')->name('insertList');
+    //  Route::put('/updateList', 'update')->name('updateList');
+    //  Route::delete('/deleteList', 'destroy');
+    //  });
 
 
     //For Notification Data
-     Route::controller(notificationController::class)->group(function(){
-     Route::post('/insertRecord','addNotification')->name('insertRecord');
-     Route::get('/getRecords','fetchRecords');
-     Route::get('/getSubscribe','subscriptionRecord');
+      Route::group(['middleware'=>'api'],function($routes){
+      Route::post('/insertRecord',[notificationController::class,'addNotification'])->name('insertRecord');
+      Route::get('/getRecords',[notificationController::class,'fetchRecords']);
+      Route::get('/getSubscribe',[notificationController::class,'subscriptionRecord']);
     });
+    
+    //  Route::controller(notificationController::class)->group(function(){
+    //  Route::post('/insertRecord','addNotification')->name('insertRecord');
+    //  Route::get('/getRecords','fetchRecords');
+    //  Route::get('/getSubscribe','subscriptionRecord');
+    // });
 
       // For Login Data
 

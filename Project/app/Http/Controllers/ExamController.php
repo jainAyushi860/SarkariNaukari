@@ -14,9 +14,13 @@ class ExamController extends Controller
 
     public function index()
     {
+        if (auth()->check()) {
         $exam = Exam::all();
 
         return response()->json(['status' => 'success', 'data' => $exam], 200);
+         } else {
+            return response()->json(['message' => 'Not Authorized'], 401);
+        }
     }
 
     /**
@@ -63,6 +67,7 @@ class ExamController extends Controller
      */
     public function show(Request $request)
     {
+        if (auth()->check()) {
         $id = $request->input('id');
 
         if (!$id) {
@@ -76,6 +81,9 @@ class ExamController extends Controller
         } else {
             return response()->json(['status' => 'error', 'message' => 'Data not found'], 404);
         }
+    } else {
+        return response()->json(['message' => 'Not Authorized'], 401);
+    }
     }
 
     /**

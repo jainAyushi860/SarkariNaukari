@@ -13,9 +13,12 @@ class SubjectController extends Controller
      */
     public function index()
     {
-     $subject = Subject::all();
-
+        if (auth()->check()) {
+         $subject = Subject::all();
     return response()->json(['status' => 'success', 'data' => $subject], 200);
+   } else {
+    return response()->json(['message' => 'Not Authorized'], 401);
+   }
     }
 
     /**
@@ -50,7 +53,7 @@ class SubjectController extends Controller
      */
     public function show(Request $request)
     {
-
+        if (auth()->check()) {
         $id = $request->input('id');
 
         if (!$id) {
@@ -65,6 +68,9 @@ class SubjectController extends Controller
         } else {
             return response()->json(['status' => 'error', 'message' => 'Data not found'], 404);
         }
+    } else {
+        return response()->json(['message' => 'Not Authorized'], 401);
+       }
     }
 
     /**

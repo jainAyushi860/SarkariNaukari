@@ -6,11 +6,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\NotificationDetail;
 use App\Models\NotificationSubscribe;
+use Auth;
 
 class NotificationController extends Controller
 {
     public function addNotification(Request $request) {
-
+        if (auth()->check()) {
         $validator = validator::make($request ->all(),[
             'title' => 'required|regex:/^[a-zA-Z- ]*$/',
             'description' => 'required|regex:/^[a-zA-Z- ]*$/',
@@ -32,8 +33,6 @@ class NotificationController extends Controller
   if ($validator->fails()) {
     return response()->json(['message' => $validator->errors()], 422);
    }
-
-
        // Upload image
        $image = $request->file('image');
        $fileName = 'mypic' . mt_rand(10000, 99999) . '_' . time() . '.' . $image->getClientOriginalExtension();
@@ -57,18 +56,18 @@ class NotificationController extends Controller
 
     // Return a JSON response indicating success
     return response()->json(['message' => 'Data saved successfully'], 200);
-
+       } else {
+    return response()->json(['message' => 'Not Authorized'], 401);
+       }
     }
 
     public function fetchRecords(Request $request) {
-
+        if (auth()->check()) {
         $fromDate = $request->input('fromDate');
         $toDate = $request->input('toDate');
 
          // Query the database using Eloquent
          $query = NotificationDetail::query();
- 
-
         if ($fromDate && $toDate) {
             $notifications = $query->whereBetween('created_at', [$fromDate, $toDate])->get();
         } elseif ($fromDate) {
@@ -78,7 +77,6 @@ class NotificationController extends Controller
         }
             $records = $query->get();
         
-
         if ($records->count() > 0) {
             return response()->json([
                 'data' => $records,
@@ -91,11 +89,15 @@ class NotificationController extends Controller
                 'message' => 'No Records Found',
             ]);
         }
+    } else {
+        return response()->json(['message' => 'Not Authorized'], 401);
+    }
     }
 
 
     public function subscriptionRecord(Request $request)
     {
+        if (auth()->check()) {
         $fromDate = $request->input('fromDate');
         $toDate = $request->input('toDate');
         $status = $request->input('status');
@@ -128,6 +130,8 @@ class NotificationController extends Controller
                 'message' => 'No Records Found',
             ]);
         }
+    } else {
+        return response()->json(['message' => 'Not Authorized'], 401);
     }
-
+ }
 }
