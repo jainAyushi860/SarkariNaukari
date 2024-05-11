@@ -45,7 +45,7 @@ Route::get('/viewmocktest/{id}',[MockTestController::class,'viewquestion']);
 
     // For Media Data
 
-    Route::group(['middleware'=>'api'],function($routes){
+      Route::group(['middleware'=>'api'],function($routes){
       Route::get('/getList',[MediaController::class,'fetchRecord']);
       Route::post('/insertList',[MediaController::class,'store'])->name('insertList');
       Route::put('/updateList',[MediaController::class,'update'])->name('updateList');
