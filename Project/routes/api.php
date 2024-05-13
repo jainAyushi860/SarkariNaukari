@@ -18,12 +18,10 @@ use App\Http\Controllers\ExamController;
 
 
 // For Questions
-Route::group(['middleware'=>'api'],function($routes){
-Route::post('/addquestion',[MockTestController::class,'addquestion']);
-});
-
-Route::get('/viewmocktest/{id}',[MockTestController::class,'viewquestion']);
-
+  Route::group(['middleware'=>'api'],function($routes){
+  Route::post('/addquestion',[MockTestController::class,'addquestion']);
+  Route::get('/viewmocktest/{id}',[MockTestController::class,'viewquestion']);
+  });
 
   //For Subject
       Route::group(['middleware'=>'api'],function($routes){

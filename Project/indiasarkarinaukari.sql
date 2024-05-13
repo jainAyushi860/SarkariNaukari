@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 01, 2024 at 03:23 PM
+-- Generation Time: May 13, 2024 at 06:10 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -46,6 +46,62 @@ INSERT INTO `addrole` (`id`, `name`, `created_at`, `updated_at`, `permissions`) 
 (18, 'Developer', '2024-04-26 03:59:17', '2024-04-26 03:59:17', '[\"Add\",\"Edit\",\"View\",\"Delete\"]'),
 (19, 'Administrator', '2024-04-26 03:59:52', '2024-04-26 03:59:52', '[\"Add\",\"Edit\",\"View\",\"Delete\"]'),
 (20, 'Subscriber', '2024-04-26 04:00:24', '2024-04-26 04:00:24', '[\"View\"]');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `add_mock_test`
+--
+
+CREATE TABLE `add_mock_test` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `question` varchar(255) DEFAULT NULL,
+  `option1` varchar(255) DEFAULT NULL,
+  `option2` varchar(255) DEFAULT NULL,
+  `option3` varchar(255) DEFAULT NULL,
+  `option4` varchar(255) DEFAULT NULL,
+  `answer` varchar(255) DEFAULT NULL,
+  `subject` varchar(255) NOT NULL,
+  `appearExam` varchar(255) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `add_mock_test`
+--
+
+INSERT INTO `add_mock_test` (`id`, `question`, `option1`, `option2`, `option3`, `option4`, `answer`, `subject`, `appearExam`, `created_at`, `updated_at`) VALUES
+(2, 'question', 'optionone', 'optiontwo', 'optionthree', 'optionfour', 'optionfour', 'java,php,js,.net', '2024,2020,2018,2000', '2024-05-10 05:17:59', '2024-05-10 05:17:59'),
+(3, 'question', 'optionone', 'optiontwo', 'optionthree', 'optionfour', 'optionfour', 'java,php,js,.net', '2024,2020,2018,2000', '2024-05-10 05:27:33', '2024-05-10 05:27:33'),
+(4, 'question', 'optionone', 'optiontwo', 'optionthree', 'optionfour', 'optionfour', 'java,php,js,.net', '2024,2020,2018,2000', '2024-05-10 05:49:55', '2024-05-10 05:49:55'),
+(5, 'question', 'optionone', 'optiontwo', 'optionthree', 'optionfour', 'optionfour', 'java,php,js,.net', '2024,2020,2018,2000', '2024-05-10 06:00:07', '2024-05-10 06:00:07'),
+(6, 'question', 'optionone', 'optiontwo', 'optionthree', 'optionfour', 'optionfour', 'java,php,js,.net', '2024,2020,2018,2000', '2024-05-10 06:54:55', '2024-05-10 06:54:55'),
+(11, 'dddd', 'sdsd', 'sdsd', 'dd', 'sdsd', 'sdsd', 'sdd,erer,rr,sg', 'dsd,svsv,bss,sv', '2024-05-11 06:01:21', '2024-05-11 06:01:21');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `exam`
+--
+
+CREATE TABLE `exam` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `exam_name` varchar(255) DEFAULT NULL,
+  `year` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `exam`
+--
+
+INSERT INTO `exam` (`id`, `exam_name`, `year`, `created_at`, `updated_at`) VALUES
+(1, 'SSC-CGL', '2010', '2024-05-11 03:37:30', '2024-05-11 04:07:53'),
+(2, 'Bank', '2012', '2024-05-11 03:38:38', '2024-05-11 03:38:38'),
+(3, 'Railways', '2010', '2024-05-11 03:39:12', '2024-05-11 03:39:12'),
+(5, 'SSC', '2010', '2024-05-11 06:08:22', '2024-05-11 06:09:51');
 
 -- --------------------------------------------------------
 
@@ -129,7 +185,11 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (30, '2024_04_25_062756_add_foreign_key_to_userrole', 21),
 (31, '2024_04_25_124815_create_userrights', 22),
 (32, '2024_04_26_085623_add_permissions_to_addrole', 23),
-(33, '2024_05_01_042348_create_permission_tables', 24);
+(33, '2024_05_01_042348_create_permission_tables', 24),
+(35, '2024_05_10_074834_create_mock_test_table', 25),
+(36, '2024_05_10_102526_create_add_mock_test_table', 25),
+(37, '2024_05_11_043628_create_subject_table', 26),
+(38, '2024_05_11_075747_create_exam_table', 27);
 
 -- --------------------------------------------------------
 
@@ -160,7 +220,9 @@ CREATE TABLE `model_has_roles` (
 --
 
 INSERT INTO `model_has_roles` (`role_id`, `model_type`, `model_id`) VALUES
-(3, 'App\\Models\\User', 8);
+(2, 'App\\Models\\User', 10),
+(3, 'App\\Models\\User', 9),
+(3, 'App\\Models\\User', 10);
 
 -- --------------------------------------------------------
 
@@ -234,8 +296,7 @@ CREATE TABLE `otp` (
 --
 
 INSERT INTO `otp` (`id`, `email`, `email_otp`, `mobile_number`, `mobile_otp`, `client_id`, `created_at`, `updated_at`) VALUES
-(43, NULL, NULL, '+91 99296 55475', '6286', '9', '2024-04-19 03:58:44', '2024-04-19 03:58:44'),
-(44, NULL, NULL, '+91 86021 62909', '9972', '27', '2024-04-26 23:11:33', '2024-04-26 23:11:33');
+(43, NULL, NULL, '+91 99296 55475', '6286', '9', '2024-04-19 03:58:44', '2024-04-19 03:58:44');
 
 -- --------------------------------------------------------
 
@@ -336,10 +397,19 @@ CREATE TABLE `role_has_permissions` (
 
 INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 (2, 2),
+(2, 3),
 (3, 2),
+(3, 3),
 (3, 4),
 (4, 2),
-(5, 2);
+(5, 2),
+(7, 2),
+(7, 3),
+(8, 2),
+(8, 3),
+(8, 4),
+(9, 2),
+(10, 2);
 
 -- --------------------------------------------------------
 
@@ -371,8 +441,32 @@ INSERT INTO `signup` (`id`, `name`, `email`, `mobile`, `dob`, `gender`, `passwor
 (4, 'admin', 'myadmin@gmail.com', '8908987776', '2020-02-10', 'Male', 'yT@143rT', 'Active', NULL, '2024-04-12 04:54:23', '2024-04-12 04:54:23', NULL),
 (6, 'sohil', 'sohil@gmail.com', '7890987678', '2024-03-20', 'male', '$2y$10$sxKsKNRysR/oenfnRSb8ru.HIE2sxumPWUK.fPbT4wr6jbrQFDd9O', 'Active', NULL, '2024-04-15 03:38:31', '2024-04-15 23:29:02', NULL),
 (7, 'sohil', 'sohil12@gmail.com', '7890987678', '2024-03-20', 'male', '$2y$10$mW4RlbdkdUAS6tRd4avhs.KCwk.knPKjk8N566rz3njF7nd.ig.K.', 'Active', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xvZ2luRGF0YSIsImlhdCI6MTcxMzE4NTQzNCwiZXhwIjoxNzEzMTg1NDk0LCJuYmYiOjE3MTMxODU0MzQsImp0aSI6IjBrT1M1OFA1Z3E1SlJHa20iLCJzdWIiOiI3IiwicHJ2IjoiNWM1YjJhZmU2MDI2MmU1M2I1OGE1YTFmMGY5NzIyZjdlNjc3ZjRiYyJ9.zLZ8pqC12HtWKqm_As029Dl4R6NoD7pXqd_QPEG3QXg', '2024-04-15 04:35:23', '2024-04-15 22:57:51', NULL),
-(21, 'ayushi', 'ayushi@gmail.com', '8790978908', '2024-04-02', 'Female', '$2y$10$gHOlG.YytAU9UbZ8eU7FNOWnZI2nxJ3vxTApk1IsY4L2m.Bk0Prlu', 'Active', NULL, '2024-04-22 03:37:16', '2024-04-22 03:37:16', NULL),
-(28, 'Ayushi Jain', 'jayushi073@gmail.com', NULL, NULL, NULL, '$2y$10$TLa9XaFlIY1kkzS9ONR/1excNqpsRiSfUc9COagO4wZTZvVvJulP.', 'Active', 'ya29.a0Ad52N39G6j_KnA8Ckhi8FfQm3xGa74Cp9JXqfXomni-9sgfWUQUcdakqPmGWK8j0VYznQjPiAFUZfMZef8YawUS-tV9tezmfQQfJirlssLyxO3HwQRzS9w1148sBzvEkSPih3pnE02ilHeA3vsrkCLHuAfpBjqgoowaCgYKAVgSARMSFQHGX2MiNs-T-MEarLuERbEYH6hhWw0169', '2024-04-27 03:32:36', '2024-04-27 03:32:36', '103917913326563265305');
+(30, 'arpita', 'arpita123@gmail.com', '+91 89776 56789', '2021-09-01', 'female', '$2y$10$g2rpQ6o8cajkRP/mUPkV6eRLj2NTTaDMwsr/5UcFBv9vQmgtCB1cC', 'Active', NULL, '2024-05-03 06:46:15', '2024-05-03 06:46:15', NULL),
+(31, 'ayushi', 'jayushi073@gmail.com', '+91 89776 56789', '2021-09-01', 'female', '$2y$10$xo6wUcFsw2MqHW5fBJIS.uFU4xk17ScjD17jAZdTalrddRNm5DGFu', 'Active', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xvZ2luRGF0YSIsImlhdCI6MTcxNDk4MTcxNCwiZXhwIjoxNzE0OTgxNzc0LCJuYmYiOjE3MTQ5ODE3MTQsImp0aSI6Ijg1MFBIdVo0Tkp2bldybTUiLCJzdWIiOiIzMSIsInBydiI6IjVjNWIyYWZlNjAyNjJlNTNiNThhNWExZjBmOTcyMmY3ZTY3N2Y0YmMifQ.4G-KfBrCZTxkpRWyI32FxUsAUJT_578lsqXiltkrt1g', '2024-05-03 07:07:39', '2024-05-06 02:18:34', NULL),
+(32, 'nikita', 'nikita@gmail.com', '+91 78909 87654', '2024-05-01', 'Female', '$2y$10$MkX3/XDKodAL5EBU22u6lOGEV196RRLaBn4cQytTdBeFCKoBIaETq', 'Active', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xvZ2luRGF0YSIsImlhdCI6MTcxNTQzMTIzNiwiZXhwIjoxNzE1NDMxMjk2LCJuYmYiOjE3MTU0MzEyMzYsImp0aSI6ImU1cUJBSjBZR0Y3MHVhWHAiLCJzdWIiOiIzMiIsInBydiI6IjVjNWIyYWZlNjAyNjJlNTNiNThhNWExZjBmOTcyMmY3ZTY3N2Y0YmMifQ.x0reCbmpXNwr0Jx5S5Hu9uM3zcDQ4Sw4S2qfAHMv-cU', '2024-05-09 02:09:02', '2024-05-11 07:10:36', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `subject`
+--
+
+CREATE TABLE `subject` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `subject_name` varchar(100) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `subject`
+--
+
+INSERT INTO `subject` (`id`, `subject_name`, `created_at`, `updated_at`) VALUES
+(1, 'java', '2024-05-10 23:37:12', '2024-05-11 06:03:17'),
+(2, 'javascript', '2024-05-10 23:37:32', '2024-05-10 23:37:32'),
+(3, 'php', '2024-05-10 23:38:03', '2024-05-10 23:38:03'),
+(5, 'nodejs', '2024-05-10 23:38:35', '2024-05-10 23:38:35');
 
 -- --------------------------------------------------------
 
@@ -441,10 +535,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Arpita', 'arpita@gmail.com', NULL, '$2y$10$Vp..FEPnWQZWpuoGl43g/uHbEilF31TghmOYyhXgY8f0a9rHVnACK', NULL, '2024-04-15 01:10:08', '2024-04-15 01:10:08'),
-(2, 'Nikita', 'nikita@gmail.com', NULL, '$2y$10$ksbO1Z9pZYlWH5NPvmkYT.xM0X04ESrRqtOpUkIKRPTxQ3mYpMnai', NULL, '2024-04-15 01:11:35', '2024-04-15 01:11:35'),
-(7, 'super admin', 'superadmin@gmail.com', NULL, '$2y$10$4/bTSjST2dYU5bmloMACle8bfZtBYYoqnvCvX05ys9LizAfFsswz6', NULL, '2024-05-01 07:14:38', '2024-05-01 07:14:38'),
-(8, 'dddsd', 'ff@gmail.com', NULL, '$2y$10$WggBo2LLv.QoEf/G/xfIdOHaID7uAEVHhKaMy/WJE8qODyRZqU946', NULL, '2024-05-01 07:20:21', '2024-05-01 07:20:21');
+(9, 'admin', 'admin@gmail.com', NULL, '$2y$10$Ve8cB4Q6aqSAFtJAYAwGNORDfbltPbCH874UtrtXR.c6TrxRTwPhm', NULL, '2024-05-01 23:20:03', '2024-05-01 23:20:03'),
+(10, 'Superadmin', 'superadmin@gmail.com', NULL, '$2y$10$vIlgldfa9GHOChgb01qYnOpBdjMNr.G4h1kdH7xdFxF0cXg0McdGe', NULL, '2024-05-01 23:20:38', '2024-05-01 23:20:38');
 
 --
 -- Indexes for dumped tables
@@ -454,6 +546,18 @@ INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `re
 -- Indexes for table `addrole`
 --
 ALTER TABLE `addrole`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `add_mock_test`
+--
+ALTER TABLE `add_mock_test`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `exam`
+--
+ALTER TABLE `exam`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -550,6 +654,12 @@ ALTER TABLE `signup`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `subject`
+--
+ALTER TABLE `subject`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `userrights`
 --
 ALTER TABLE `userrights`
@@ -580,6 +690,18 @@ ALTER TABLE `addrole`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
+-- AUTO_INCREMENT for table `add_mock_test`
+--
+ALTER TABLE `add_mock_test`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT for table `exam`
+--
+ALTER TABLE `exam`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
 -- AUTO_INCREMENT for table `failed_jobs`
 --
 ALTER TABLE `failed_jobs`
@@ -595,7 +717,7 @@ ALTER TABLE `media`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT for table `notificationdetail`
@@ -637,7 +759,13 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `signup`
 --
 ALTER TABLE `signup`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+
+--
+-- AUTO_INCREMENT for table `subject`
+--
+ALTER TABLE `subject`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `userrights`
@@ -655,7 +783,7 @@ ALTER TABLE `userrole`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Constraints for dumped tables
